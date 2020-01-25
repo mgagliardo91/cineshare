@@ -2,8 +2,10 @@ import nodeMigrate from 'node-pg-migrate';
 import path from 'path';
 import bodyParser from 'body-parser';
 import express from 'express';
-import config from 'config';
+import logger from 'morgan';
+import './config';
 import routes from './routes';
+import { authorizeRoute } from './middleware/auth';
 import { ApiError } from './error';
 
 const port = process.env.PORT || 3000;
@@ -15,10 +17,19 @@ app.use(
   })
 );
 
-app.use('/api/v1', routes.reduce((router, route) => {
-  route(router);
-  return router;
-}, express.Router()));
+if (process.env.NODE_ENV !== 'production') {
+  app.use(logger('dev'));
+}
+
+routes.map(({ path, routes, private: privatePath }) => {
+  const router = express.Router();
+  if (typeof privatePath === 'undefined' || privatePath == true) {
+    router.use(authorizeRoute);
+  }
+
+  routes.map(r => r(router));
+  app.use(`/api/v1${path}`, router);
+});
 
 app.use((err, req, res, next) => {
   if (err instanceof ApiError) {
@@ -28,7 +39,13 @@ app.use((err, req, res, next) => {
 });
 
 nodeMigrate({
-  databaseUrl: config.get('db'),
+  databaseUrl: {
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME,
+  },
   dir: path.join(__dirname, '../migrations/'),
   direction: 'up',
   migrationsTable: 'migrations'

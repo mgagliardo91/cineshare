@@ -1,3 +1,12 @@
-import config from 'config';
+
+import './config';
+
 const Pool = require('pg').Pool;
-export default new Pool(config.get('db'));
+
+export default new Pool({ 
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
+});
