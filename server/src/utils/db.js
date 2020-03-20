@@ -1,6 +1,3 @@
-
-import './config';
-
 const Pool = require('pg').Pool;
 
 export default new Pool({ 
@@ -10,3 +7,12 @@ export default new Pool({
   port: process.env.DB_PORT,
   database: process.env.DB_NAME,
 });
+
+export const getSingleRow = async (queryPromise) => {
+  const result = await queryPromise;
+  if (result.rowCount = 0) {
+    return undefined;
+  }
+
+  return result.rows[0];
+};

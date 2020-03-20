@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
-import '../config';
-import NotAuthorizedError from '../error/NotAuthorizedError';
+import NotAuthorizedError from 'error/NotAuthorizedError';
 
 export const createJwt = user => {
   const payload = {

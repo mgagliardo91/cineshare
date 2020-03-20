@@ -4,7 +4,7 @@
   "description": "Server component for the cineshare application",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node src/server.js",
+    "start": "nodemon --exec babel-node -r dotenv/config src/server.js",
     "services:up": "docker-compose up --build -d",
     "services:down": "docker-compose down -v --remove-orphans",
     "migrate": "node-pg-migrate"
@@ -21,20 +21,26 @@
   "homepage": "https://github.com/mgagliardo91/cineshare#readme",
   "dependencies": {
     "bcrypt": "^3.0.7",
+    "bent": "^7.0.4",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
     "node-pg-migrate": "^4.2.2",
     "path": "^0.12.7",
     "pg": "^7.17.1",
+    "query-string": "^6.10.1",
+    "shortid": "^2.2.15",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
     "@babel/node": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
+    "babel-plugin-lodash": "^3.3.4",
+    "babel-plugin-module-resolver": "^4.0.0",
     "nodemon": "^2.0.2"
   }
 }

@@ -1,8 +1,8 @@
-import { createUser, getUser } from '../controller/user';
+import { createUser, getUserById } from '../controller/user';
 
 const doGet = router => router.get('/', async (req, res, next) => {
   try {
-    const user = await getUser(req.user);
+    const user = await getUserById(req.user.id);
     return res.json(user);
   } catch (error) {
     return next(error);

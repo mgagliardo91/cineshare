@@ -3,10 +3,9 @@ import path from 'path';
 import bodyParser from 'body-parser';
 import express from 'express';
 import logger from 'morgan';
-import './config';
-import routes from './routes';
-import { authorizeRoute } from './middleware/auth';
-import { ApiError } from './error';
+import routes from 'routes';
+import { authorizeRoute } from 'middleware/auth';
+import { ApiError } from 'error';
 
 const port = process.env.PORT || 3000;
 const app = express();

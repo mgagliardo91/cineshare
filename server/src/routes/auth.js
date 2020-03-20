@@ -1,5 +1,5 @@
-import { createJwt, verifyJwt } from '../controller/auth';
-import { getAndValidateUser } from '../controller/user';
+import { createJwt } from 'controller/auth';
+import { createUser, getAndValidateUser } from 'controller/user';
 
 const doLogin = router => router.post('/login', async (req, res, next) => {
   try {
@@ -11,10 +11,10 @@ const doLogin = router => router.post('/login', async (req, res, next) => {
   }
 });
 
-const doVerify = router => router.post('/verify', async (req, res, next) => {
+const doSignUp = router => router.post('/signup', async (req, res, next) => {
   try {
-    const decoded = verifyJwt(req.body.token);
-    return res.json(decoded);
+    const user = await createUser(req.body);
+    return res.json(createJwt(user));
   } catch (e) {
     return next(e);
   }
@@ -24,7 +24,7 @@ export default {
   path: '/auth',
   routes: [
     doLogin,
-    doVerify
+    doSignUp
   ],
   private: false
 };
