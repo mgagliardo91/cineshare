@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import db from 'utils/db';
 import generateId, { isValidId } from 'utils/generateId';
 import { ValidationError, NotFoundError } from 'error';
-import { ApiError, BadRequestError } from '../error';
+import { ApiError, BadRequestError, NotAuthorizedError } from '../error';
 
 const saltRounds = 10;
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -64,4 +64,10 @@ export const getAndValidateUser = async ({ email, password }) => {
   }
 
   return user;
+};
+
+export const validateUser = ({ user, params }) => {
+  if (user.id !== params.userId) {
+    throw new NotAuthorizedError('Unauthorized to execute request');
+  }
 };

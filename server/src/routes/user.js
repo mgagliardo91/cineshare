@@ -28,7 +28,7 @@ const doValidate = router => router.post('/validate', async (req, res, next) => 
 });
 
 export default {
-  path: '/user',
+  path: '/users',
   routes: [
     doGet,
     doCreate,
