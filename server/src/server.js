@@ -1,11 +1,10 @@
-import nodeMigrate from 'node-pg-migrate';
-import path from 'path';
 import bodyParser from 'body-parser';
 import express from 'express';
 import logger from 'morgan';
 import routes from 'routes';
 import { authorizeRoute } from 'middleware/auth';
 import { ApiError } from 'error';
+import sequelize from './model';
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -37,17 +36,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.stack });
 });
 
-nodeMigrate({
-  databaseUrl: {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    database: process.env.DB_NAME,
-  },
-  dir: path.join(__dirname, '../migrations/'),
-  direction: 'up',
-  migrationsTable: 'migrations'
-}).then(() => {
+sequelize.sync().then(async () => {
+  console.log('Connection has been established');
   app.listen(port, () => console.log(`Server is running on port ${port}`));
+}).catch(err => {
+  console.error('Error connecting', err);
 });

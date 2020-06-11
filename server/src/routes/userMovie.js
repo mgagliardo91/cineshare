@@ -1,4 +1,10 @@
-import { createUserMovie, getAllUserMovie } from '../controller/userMovie';
+import {
+  createUserMovie,
+  getAllUserMovie,
+  getUserMovie,
+  updateUserMovie,
+  deleteUserMovie
+} from '../controller/userMovie';
 import { validateUser } from '../controller/user';
 
 const createUserRoute = route => `/:userId${route}`;
@@ -21,9 +27,27 @@ const getMovies = router => router.get(createUserRoute('/movies'), async (req, r
   }
 });
 
-const updateMovie = router => router.put(createUserRoute('/movies'), async (req, res, next) => {
+const updateMovie = router => router.put(createUserRoute('/movies/:userMovieId'), async (req, res, next) => {
   try {
+    validateUser(req);
+    return res.json(await updateUserMovie({ user: req.user, userMovieId: req.params.userMovieId, update: req.body}));
+  } catch (e) {
+    return next(e);
+  }
+});
 
+const getMovie = router => router.get(createUserRoute('/movies/:userMovieId'), async (req, res, next) => {
+  try {
+    return res.json(await getUserMovie({ user: req.user, userMovieId: req.params.userMovieId }));
+  } catch (e) {
+    return next(e);
+  }
+});
+
+const deleteMovie = router => router.delete(createUserRoute('/movies/:userMovieId'), async (req, res, next) => {
+  try {
+    validateUser(req);
+    return res.json(await deleteUserMovie({ user: req.user, userMovieId: req.params.userMovieId }));
   } catch (e) {
     return next(e);
   }
@@ -33,6 +57,9 @@ export default {
   path: '/users',
   routes: [
     doAddMovie,
-    getMovies
+    getMovies,
+    getMovie,
+    updateMovie,
+    deleteMovie
   ]
 };

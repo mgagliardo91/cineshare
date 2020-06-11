@@ -1,12 +1,10 @@
-import db, { getSingleRow } from 'utils/db';
 import moment from 'moment';
 import { find } from 'lodash/collection';
 import { has } from 'lodash/object';
 import { isFunction, isString, isUndefined } from 'lodash/lang';
 import { fetchMovieDetails } from 'utils/movies';
-import generateId from 'utils/generateId';
-import { NotFoundError } from 'error';
-import { BadRequestError } from '../error';
+import { NotFoundError, BadRequestError } from 'error';
+import { Movie } from 'model';
 
 const fieldsToStore = {
   year: 'Year',
@@ -51,20 +49,13 @@ const extractMovieDetails = movie => {
   }, {});
 };
 
-const getMovieByImdbId = async (imdbId) => {
-  return getSingleRow(db.query(`SELECT id, title, imdb_id, image_url, data FROM movies WHERE imdb_id='${imdbId}'`));
-}
-
-export const getMovieById = async (imdbId) => {
-  return getSingleRow(db.query(`SELECT * FROM movies WHERE id='${id}'`));
-}
 
 export const addMovie = async ({ imdbId, user }) => {
   if (isUndefined(imdbId)) {
     throw new BadRequestError('Parameter \'imdbId\' is required');
   }
 
-  const existingMovie = await getMovieByImdbId(imdbId);
+  const existingMovie = await Movie.findByImdbId(imdbId);
   if (existingMovie) {
     console.log('Found existing movie', existingMovie);
     return existingMovie;
@@ -77,10 +68,11 @@ export const addMovie = async ({ imdbId, user }) => {
 
   const { Title: title, Poster: imageUrl, imdbID } = movie;
   const data = extractMovieDetails(movie);
-  const result = await db.query(
-    'INSERT INTO movies (id, title, imdb_id, image_url, data, added_by)' + 
-      ' VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, title, imdb_id, image_url, data',
-    [generateId(), title, imdbID, imageUrl, data, user.id]
-  );
-  return result.rows[0];
+  const result = await Movie.create({
+    title,
+    imdbId,
+    imageUrl,
+    data
+  });
+  return result;
 };
