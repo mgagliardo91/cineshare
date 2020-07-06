@@ -1,12 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.scss';
-import Home from './pages/Home';
+import { ApolloProvider } from '@apollo/react-hooks';
 import * as serviceWorker from './serviceWorker';
+import Navigation from './components/navbar/Navigation';
+import client from './apollo';
+import Routes from './routes';
+import './index.scss';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Home />
+    <ApolloProvider client={client}>
+      <Routes>
+        <Navigation />
+      </Routes>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

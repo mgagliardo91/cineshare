@@ -1,0 +1,29 @@
+overwrite: true
+schema: 'http://localhost:3000/graphql'
+documents: 'src/api/*.ts'
+hooks:
+  afterOneFileWrite:
+    - prettier --write
+config:
+  namingConvention: keep
+  withComponent: false
+  withHOC: false
+  withHooks: true
+  reactApolloVersion: 3
+  typesPrefix: I
+  apolloReactHooksImportFrom: '@apollo/react-hooks'
+  apolloReactCommonImportFrom: '@apollo/react-common'
+generates:
+  src/interfaces/graphql.tsx:
+    - add: '/* eslint-disable */'
+    - typescript
+  src/api/generated:
+    preset: near-operation-file
+    presetConfig:
+      extension: .tsx
+      folder: generated
+      baseTypesPath: ../../interfaces/graphql
+    plugins:
+      - add: '/* eslint-disable */'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'

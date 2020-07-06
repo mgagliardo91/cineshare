@@ -1,13 +1,25 @@
-import { Table, Column, Model, Unique, AllowNull, NotEmpty, PrimaryKey, Is, Default, DataType, IsUrl } from 'sequelize-typescript';
-import generateId, { isValidId } from '../utils/id';
+import {
+  Table,
+  Column,
+  Model,
+  Unique,
+  AllowNull,
+  NotEmpty,
+  PrimaryKey,
+  Is,
+  Default,
+  DataType,
+  IsUrl,
+} from "sequelize-typescript";
+import generateId, { isValidId } from "../utils/id";
 
 const imdbIdRegex = /^tt\d+$/;
 
-@Table({ underscored: true, modelName: 'movie' })
+@Table({ underscored: true, modelName: "movie" })
 export class Movie extends Model<Movie> {
   @PrimaryKey
   @AllowNull(false)
-  @Is('Valid Id', (value: string) => {
+  @Is("Valid Id", (value: string) => {
     if (!isValidId(value)) {
       throw new Error(`"${value}" is not a a valid id.`);
     }
@@ -23,9 +35,9 @@ export class Movie extends Model<Movie> {
 
   @AllowNull(false)
   @Unique
-  @Is('IMDb Id', (value: string) => {
+  @Is("IMDb Id", (value: string) => {
     if (!imdbIdRegex.test(value)) {
-      throw new Error(`"${value}" is not an IMDb Id.`)
+      throw new Error(`"${value}" is not an IMDb Id.`);
     }
   })
   @Column
@@ -39,4 +51,8 @@ export class Movie extends Model<Movie> {
   @AllowNull(false)
   @Column(DataType.JSONB)
   data: object;
+
+  static findByImdbId = async (imdbId: string) => {
+    return await Movie.findOne({ where: { imdbId } });
+  };
 }
