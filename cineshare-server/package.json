@@ -28,7 +28,7 @@
     "http": "^0.0.1-security",
     "install": "^0.13.0",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.26.0",
+    "moment": "^2.29.4",
     "nanoid": "^3.1.10",
     "ncp": "^2.0.0",
     "pg": "^8.2.1",
