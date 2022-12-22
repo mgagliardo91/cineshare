@@ -27,7 +27,7 @@
     "graphql-resolvers": "^0.4.2",
     "http": "^0.0.1-security",
     "install": "^0.13.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "moment": "^2.26.0",
     "nanoid": "^3.1.10",
     "ncp": "^2.0.0",
